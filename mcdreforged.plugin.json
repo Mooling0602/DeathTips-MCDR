@@ -1,0 +1,15 @@
+{
+	"id": "death_tips",
+	"version": "0.0.1",
+	"name": "DeathTips",
+	"description": {
+		"en_us": "Transfer death tips on the game in your language.",
+		"zh_cn": "以您的语言转发游戏内死亡消息。"
+	},
+	"dependencies": {
+		"mcdreforged": ">=2.1.0",
+		"mg_events": ">=0.0.1"
+	},
+	"author": "Mooling0602",
+    "link": "https://github.com/Mooling0602/DeathTips-MCDR"
+}

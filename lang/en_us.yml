@@ -1,0 +1,4 @@
+death_tips:
+  geyser_autodetect: 正在自动检测是否有已安装的Geyser的语言文件，若有则自动使用，你仍可以修改配置以使用自定义的语言文件
+  on_load: 正在加载用于翻译的语言文件，若没有安装json5，则即使已在配置中启用也仍使用json
+  on_player_death: 检测到玩家死亡事件，正在尝试进行翻译处理
