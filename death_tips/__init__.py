@@ -58,14 +58,11 @@ def on_player_death(server: PluginServerInterface, player, event, content):
         weapon = content.death.weapon
         if killer is not None:
             if lang is not None:
-                with open("death_tips_log.txt", "w", encoding="utf-8") as f:
-                    json.dump(lang, f, ensure_ascii=False, indent=4)
                 for key, value in lang.items():
                     if value == killer:
-                        server.logger.info("detected mob key")
                         mobkey = key
             else:
-                server.logger.info("lang cache from upstream error!")
+                server.logger.info("Loaded lang from upstream seems error!")
             try:
                 mob = tr_lang.get(mobkey, None)
             except UnboundLocalError:
