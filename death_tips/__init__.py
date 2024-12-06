@@ -14,6 +14,7 @@ except ModuleNotFoundError:
 
 psi = ServerInterface.psi()
 MCDRConfig = psi.get_mcdr_config()
+plgSelf = psi.get_self_metadata()
 serverDir = MCDRConfig["working_directory"]
 
 geyser_config = {
@@ -47,11 +48,14 @@ def on_load(server: PluginServerInterface, prev_module):
                 tr_lang = json.load(f)
         tr_langRegion = os.path.splitext(os.path.basename(tr_lang_path))[0]
         server.register_event_listener("PlayerDeathEvent", on_player_death)
+    else:
+        server.logger.error(tr("on_load_error"))
+        server.unload_plugin(plgSelf.id)
 
 def on_player_death(server: PluginServerInterface, player, event, content):
-    from mg_events.config import langRegion, lang # type: ignore
+    from mg_events.config import lang # type: ignore
     server.logger.info(tr("on_player_death"))
-    if langRegion != tr_langRegion:
+    if tr_langRegion != content.lang:
         raw = tr_lang.get(event, None)
         tip = raw.replace('%1$s', player)
         killer = content.death.killer
