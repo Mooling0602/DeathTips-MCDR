@@ -6,11 +6,7 @@ except ModuleNotFoundError:
     import json
     json_module = lambda *args, **kwargs: (json(*args, **kwargs))
 from mcdreforged.api.all import *
-try:
-    from matrix_sync.reporter import send_matrix # type: ignore
-    send = lambda *args, **kwargs: (send_matrix(*args, **kwargs))
-except ModuleNotFoundError:
-    send = lambda *args, **kwargs: psi.logger.info(*args, **kwargs)
+
 
 psi = ServerInterface.psi()
 MCDRConfig = psi.get_mcdr_config()
@@ -31,6 +27,14 @@ def tr(tr_key):
     raw = psi.rtr(f"death_tips.{tr_key}")
     return str(raw)
 
+def send(text: str):
+    try:
+        from matrix_sync.commands import matrix_reporter
+        matrix_reporter(text)
+        psi.logger.info("Found MSync, sending message to Matrix...")
+    except ModuleNotFoundError:
+        psi.logger.info(text)
+
 def on_load(server: PluginServerInterface, prev_module):
     global tr_lang, tr_langRegion
     server.logger.info(tr("geyser_autodetect"))
@@ -41,11 +45,18 @@ def on_load(server: PluginServerInterface, prev_module):
     server.logger.info(tr("on_load"))
     tr_lang_path = config["tr_lang"]
     if os.path.exists(tr_lang_path):
-        with open(f'{tr_lang_path}', 'r') as f:
-            if config["use_json5"]:
-                tr_lang = json_module.load(f)
-            else:
-                tr_lang = json.load(f)
+        try:
+            with open(f'{tr_lang_path}', 'r', encoding='utf-8') as f:
+                if config["use_json5"]:
+                    tr_lang = json_module.load(f)
+                else:
+                    tr_lang = json.load(f)
+        except UnicodeDecodeError:
+            with open(f'{tr_lang_path}', 'r', encoding='gbk') as f:
+                if config["use_json5"]:
+                    tr_lang = json_module.load(f)
+                else:
+                    tr_lang = json.load(f)
         tr_langRegion = os.path.splitext(os.path.basename(tr_lang_path))[0]
         server.register_event_listener("PlayerDeathEvent", on_player_death)
     else:
