@@ -64,7 +64,7 @@ def on_load(server: PluginServerInterface, prev_module):
         server.unload_plugin(plgSelf.id)
 
 def on_player_death(server: PluginServerInterface, player, event, content):
-    from mg_events.config import lang # type: ignore
+    import mg_events.data as data # type: ignore
     server.logger.info(tr("on_player_death"))
     if tr_langRegion != content.lang:
         raw = tr_lang.get(event, None)
@@ -72,8 +72,8 @@ def on_player_death(server: PluginServerInterface, player, event, content):
         killer = content.death.killer
         weapon = content.death.weapon
         if killer is not None:
-            if lang is not None:
-                for key, value in lang.items():
+            if data.lang is not None:
+                for key, value in data.lang.items():
                     if value == killer:
                         mobkey = key
             else:
